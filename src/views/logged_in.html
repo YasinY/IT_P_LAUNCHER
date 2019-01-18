@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello!</title>
+</head>
+
+<body>
+<button type="button" class="btn btn-primary">Test</button>
+<p>
+    You logged in!
+</p>
+<script>
+    const remote = require("electron").remote
+    require(remote.getGlobal("paths").utilities + 'prerequisites.js')(__filename)
+</script>
+</body>
+</html>
