@@ -32,7 +32,7 @@ function declareGlobals() {
 
 function prepareApplication() {
     declareGlobals()
-    window = new BrowserWindow({width: 1080, height: 520, backgroundColor: '#2c447e', resizable: false, show: false, frame: false})
+    window = new BrowserWindow({width: 720, height: 520, backgroundColor: '#2c447e', resizable: false, show: false, frame: false})
     window.loadFile('main.html')
     window.once('ready-to-show', () => {
         window.show()
@@ -41,12 +41,11 @@ function prepareApplication() {
 
 app.on('ready', prepareApplication);
 
-app.on('closed', () => {
-    app.quit()
-})
-app.on('window-all-closed', () => {
+app.on('close', () => {
     if (process.platform !== 'darwin') {
         app.quit()
+    } else {
+        event.preventDefault()
     }
 });
 

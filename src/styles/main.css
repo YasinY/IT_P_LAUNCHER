@@ -31,9 +31,11 @@ label {
 
 input {
     border-radius: 20px;
+    margin-bottom: 5px;
     caret-color: white;
     color: white;
 }
+
 
 input[type="text"]::placeholder, input[type="password"]::placeholder {
     color: lightgray;
@@ -62,4 +64,6 @@ input[type="text"]:focus, input[type="password"]:focus {
 #login_button {
     margin-top: 10px;
     margin-bottom: 10px;
+    padding: 5px 10px 5px 10px;
+    border-radius: 15%;
 }

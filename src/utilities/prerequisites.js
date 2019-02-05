@@ -13,7 +13,12 @@ class Prerequisite {
     //TODO eventually rework this to use arrays? then loop?
     //First the stylesheet appended, then the script
     prepare(callerName) {
-        this.defineHead(callerName);
+        this.initialise(callerName);
+    }
+
+    initialise(callerName) {
+        this.defineHead(callerName)
+        this.defineBody()
     }
 
     defineHead(callerName) {
@@ -22,7 +27,7 @@ class Prerequisite {
             const paths = remote.getGlobal("paths")
             const potentialStylesheet = paths.stylesheets + baseName + ".css"
             const potentialRenderer = paths.logic + baseName + "_renderer.js"
-            let baseHead = this.getHead();
+            let baseHead = this.getMetaData();
             if (fileSystem.existsSync(potentialStylesheet)) {
                 let stylesheet = document.createElement("link")
                 stylesheet.rel = "stylesheet"
@@ -33,19 +38,27 @@ class Prerequisite {
             window.$ = window.jQuery = require('jquery') //essential//then load jquery, use it
             if (fileSystem.existsSync(potentialRenderer)) {
                 console.log("Renderer exists!")
-                let renderer = $(document.createElement("script")).attr({type: 'text/javascript', src: potentialRenderer})
+                let renderer = $(document.createElement("script")).attr({
+                    type: 'text/javascript',
+                    src: potentialRenderer
+                })
                 baseHead.push(renderer)
             }
             baseHead.forEach(element => $(document.head).append(element))
         }
     }
 
+    defineBody() {
+        let baseBody = this.getHeader()
+        baseBody.forEach(element => $(document.body).prepend(element))
+    }
+
     //TODO maybe create ur own "create element" with options l
     //TODO fix unicode for macOS
-    getHead() {
-        let metaData = this.getMetaData();
+
+    getTitleBar() {
         let header = this.getHeader();
-        return metaData.concat(header); //merge arrays
+        return header;
     }
 
     getMetaData() {
@@ -66,20 +79,30 @@ class Prerequisite {
         headerSheet.href = remote.getGlobal("paths").stylesheets + "header.css"
         let header = document.createElement("header")
         let closeButton = document.createElement("button")
-        closeButton.click(function() {
-            remote.getCurrentWindow().close()
-        })
         closeButton.innerHTML = "&#xE8BB;"
+        closeButton.type = "button"
+        closeButton.id = "window-close"
         let minimizeButton = document.createElement("button")
-        minimizeButton.click(function() {
-            remote.getCurrentWindow().minimize()
-        })
+        minimizeButton.id = "window-minimize"
+        minimizeButton.type = "button"
         minimizeButton.innerHTML = "&#xE921;"
         header.appendChild(closeButton) //TODO check for multidimensional param method
         header.appendChild(minimizeButton)
         return [headerSheet, header]
     }
 }
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("window-close").onclick = function () {
+        console.log("clicked")
+        remote.getCurrentWindow().close();
+    }
+    document.getElementById("window-minimize").onclick = function () {
+        console.log("clicked")
+        remote.getCurrentWindow().minimize();
+    }
+})
 
 
 module.exports = (callerName) => {
