@@ -7,3 +7,5 @@ document.getElementsByClassName("btn btn-primary btn-lg").item(0).addEventListen
 })
 
 $("logo").attr("src", "./assets/logo.png")
+
+

@@ -50,6 +50,8 @@ class Prerequisite {
 
     }
     //TODO maybe create ur own "create element" with options l
+    //TODO fix this trash code
+    //TODO fix unicode for macos
     static getBaseHead() {
         let meta = document.createElement("meta")
         meta.charset = "UTF-8"
@@ -57,7 +59,18 @@ class Prerequisite {
         link.rel = "stylesheet"
         link.type = "text/css"
         link.href = remote.getGlobal("paths").baseDirectory + "node_modules/bootstrap/dist/css/bootstrap.css"
-        return [meta, link];
+        let headerSheet = document.createElement("link")
+        headerSheet.rel = "stylesheet"
+        headerSheet.type = "text/css"
+        headerSheet.href = remote.getGlobal("paths").stylesheets + "header.css"
+        let header = document.createElement("header")
+        let closeButton = document.createElement("button")
+        let minimizeButton = document.createElement("button")
+        closeButton.innerHTML = "&#xE8BB;"
+        minimizeButton.innerHTML = "&#xE921;"
+        header.appendChild(closeButton) //TODO check for multidimensional param method
+        header.appendChild(minimizeButton)
+        return [meta, link, headerSheet, header];
     }
 }
 
