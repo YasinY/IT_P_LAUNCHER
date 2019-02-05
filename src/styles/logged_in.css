@@ -48,7 +48,10 @@ body {
     text-align: center;
 }
 .application-start-button {
-    width: 100%;
+    display: block;
+    margin: 0 auto;
+    width: 80%;
+    background-color: #2c447e;
     border: 1px solid gray;
     transition: border 1s;
 }

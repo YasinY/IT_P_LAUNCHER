@@ -17,7 +17,6 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 function declareGlobals() {
-    console.log("Declaring globals..")
     const baseDirectory = __dirname + "/"
     const srcDirectory = baseDirectory + "src/"
     global.paths = {
@@ -33,9 +32,11 @@ function declareGlobals() {
 
 function prepareApplication() {
     declareGlobals()
-    window = new BrowserWindow({width: 720, height: 480, resizable: false, frame: false});
-    //window.setMenu(null)
+    window = new BrowserWindow({width: 1080, height: 520, backgroundColor: '#2c447e', resizable: false, show: false, frame: false})
     window.loadFile('main.html')
+    window.once('ready-to-show', () => {
+        window.show()
+    })
 }
 
 app.on('ready', prepareApplication);

@@ -5,20 +5,22 @@
 </head>
 <body>
 <header>
-    <button type="button">&#xE8BB;</button>
-    <button type="button">&#xE921;</button>
+    <button name="window-close" type="button">&#xE8BB;</button>
+    <button name="window-minimize" type="button">&#xE921;</button>
 </header>
-<div id="logo_container" class="container">
-    <img src="./assets/logo.png" id="logo" alt="" width="500px"/>
-</div>
-<div id="login_box" class="container">
-    <div class="form-group">
-        <label for="username">Your username</label>
-        <input type="text" class="form-control" placeholder="company@digit" autofocus>
-        <label for="password">Your password</label>
-        <input type="password" class="form-control" placeholder="verysecurepasswordhere">
-        <div class="text-center">
-            <button type="button" class="btn btn-primary btn-lg" id="login_button">Login</button>
+<div id="application-container">
+    <div id="logo_container" class="container">
+        <img src="./assets/logo.png" id="logo" alt="itp-logo" width="500px"/>
+    </div>
+    <div id="login_box" class="container">
+        <div class="form-group">
+            <label for="username">Your username</label>
+            <input type="text" class="form-control" placeholder="company@digit" autofocus>
+            <label for="password">Your password</label>
+            <input type="password" class="form-control" placeholder="verysecurepasswordhere">
+            <div class="text-center">
+                <button type="button" class="btn btn-primary btn-lg" id="login_button">Login</button>
+            </div>
         </div>
     </div>
 </div>
