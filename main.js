@@ -28,6 +28,7 @@ function declareGlobals() {
         logic: path.join(srcDirectory, "views/logic/"),
         assets: path.join(baseDirectory, "assets/")
     }
+    global.animated = JSON.parse(require("fs").readFileSync(global.paths.utilities + "animations.json", 'utf-8'))
 }
 
 function prepareApplication() {

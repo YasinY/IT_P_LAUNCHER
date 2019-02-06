@@ -1,16 +1,3 @@
-@keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-#application-container {
-    animation: fade-in 2s;
-}
-
 body {
     background-color: #164780;
     color: white;

@@ -5,24 +5,17 @@ const path = require("path")
 
 class Prerequisite {
 
+
+
     constructor(callerName) {
-        this.prepare(callerName)
+        this.initialise(path.basename(callerName).replace(".html", ""))
     }
 
-    //order is important
-    //TODO eventually rework this to use arrays? then loop?
-    //First the stylesheet appended, then the script
-    prepare(callerName) {
-        this.initialise(callerName);
+    initialise(baseName) {
+        this.defineHead(baseName, remote.getGlobal("animated"))
     }
 
-    initialise(callerName) {
-        this.defineHead(callerName)
-        this.defineBody()
-    }
-
-    defineHead(callerName) {
-        const baseName = path.basename(callerName).replace(".html", "")
+    defineHead(baseName, animatedArray) {
         if (baseName.indexOf(".html") === -1) { //if successfully replaced..
             const paths = remote.getGlobal("paths")
             const potentialStylesheet = paths.stylesheets + baseName + ".css"
@@ -35,7 +28,7 @@ class Prerequisite {
                 stylesheet.type = "text/css"
                 baseHead.push(stylesheet)
             }
-            window.$ = window.jQuery = require('jquery') //essential//then load jquery, use it
+            window.$ = window.jQuery = require('jquery') //its safe to say, after this line jquery can easily be used
             if (fileSystem.existsSync(potentialRenderer)) {
                 console.log("Renderer exists!")
                 let renderer = $(document.createElement("script")).attr({
@@ -44,22 +37,35 @@ class Prerequisite {
                 })
                 baseHead.push(renderer)
             }
+            if(animatedArray.some(element => element.site === baseName)) { //if contains
+                let keyframes = $(document.createElement("link")).attr({ //invoke the keyframes css
+                    rel: "stylesheet",
+                    type: "text/css",
+                    href: paths.stylesheets + "keyframes.css"
+                })
+                baseHead.push(keyframes)
+            }
             baseHead.forEach(element => $(document.head).append(element))
+            this.defineBody(baseName, $("link[href='"+ paths.stylesheets + "keyframes.css']").length)
         }
     }
 
-    defineBody() {
+    defineBody(baseName, animatedArray = false) {
         let baseBody = this.getHeader()
+        if (animatedArray) { //if exists
+            const potentialAnimation = remote.getGlobal("animated").find(element => element.site === baseName); //grab
+            console.log("Potential animatioN: " + potentialAnimation)
+            if (potentialAnimation !== undefined) {
+                let animationType = potentialAnimation.type;
+                $(document.body).wrapInner("<div class='" + animationType + "-container'></div>")
+            }
+        }
         baseBody.forEach(element => $(document.body).prepend(element))
     }
 
     //TODO maybe create ur own "create element" with options l
     //TODO fix unicode for macOS
 
-    getTitleBar() {
-        let header = this.getHeader();
-        return header;
-    }
 
     getMetaData() {
         let meta = document.createElement("meta")
@@ -68,32 +74,32 @@ class Prerequisite {
         link.rel = "stylesheet"
         link.type = "text/css"
         link.href = remote.getGlobal("paths").baseDirectory + "node_modules/bootstrap/dist/css/bootstrap.css"
-        return [meta, link];
-    }
-
-
-    getHeader() {
         let headerSheet = document.createElement("link")
         headerSheet.rel = "stylesheet"
         headerSheet.type = "text/css"
         headerSheet.href = remote.getGlobal("paths").stylesheets + "header.css"
+        return [meta, link, headerSheet];
+    }
+
+
+    getHeader() {
         let header = document.createElement("header")
         let closeButton = document.createElement("button")
-        closeButton.innerHTML = "&#xE8BB;"
+        closeButton.innerHTML = "&#10005;"
         closeButton.type = "button"
         closeButton.id = "window-close"
         let minimizeButton = document.createElement("button")
         minimizeButton.id = "window-minimize"
         minimizeButton.type = "button"
-        minimizeButton.innerHTML = "&#xE921;"
+        minimizeButton.innerHTML = "&minus;"
         header.appendChild(closeButton) //TODO check for multidimensional param method
         header.appendChild(minimizeButton)
-        return [headerSheet, header]
+        return [header]
     }
 }
 
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("window-close").onclick = function () {
         console.log("clicked")
         remote.getCurrentWindow().close();

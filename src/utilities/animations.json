@@ -1,0 +1,14 @@
+[
+  {
+    "site": "main",
+    "type": "grow-left"
+  },
+  {
+    "site": "logged_in",
+    "type": "fade-in"
+  },
+  {
+    "site": "updating",
+    "type": "grow-left"
+  }
+]
