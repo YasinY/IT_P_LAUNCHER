@@ -1,4 +1,5 @@
 // entry point
+require('electron-reload')(__dirname)
 
 const {app, BrowserWindow} = require("electron");
 const path = require("path")
@@ -37,6 +38,7 @@ function prepareApplication() {
     window.loadFile('main.html')
     window.once('ready-to-show', () => {
         window.show()
+        window.focus()
     })
 }
 

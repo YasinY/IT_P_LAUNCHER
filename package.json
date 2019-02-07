@@ -10,7 +10,8 @@
   "author": "Yasin Yazici",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^3.0.10"
+    "electron": "^3.0.10",
+    "electron-reload": "^1.4.0"
   },
   "dependencies": {
     "bootstrap": "^4.1.3",

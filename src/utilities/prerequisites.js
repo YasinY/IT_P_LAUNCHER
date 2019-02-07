@@ -5,8 +5,6 @@ const path = require("path")
 
 class Prerequisite {
 
-
-
     constructor(callerName) {
         this.initialise(path.basename(callerName).replace(".html", ""))
     }
@@ -54,7 +52,6 @@ class Prerequisite {
         let baseBody = this.getHeader()
         if (animatedArray) { //if exists
             const potentialAnimation = remote.getGlobal("animated").find(element => element.site === baseName); //grab
-            console.log("Potential animatioN: " + potentialAnimation)
             if (potentialAnimation !== undefined) {
                 let animationType = potentialAnimation.type;
                 $(document.body).wrapInner("<div class='" + animationType + "-container'></div>")
@@ -92,7 +89,7 @@ class Prerequisite {
         minimizeButton.id = "window-minimize"
         minimizeButton.type = "button"
         minimizeButton.innerHTML = "&minus;"
-        header.appendChild(closeButton) //TODO check for multidimensional param method
+        header.appendChild(closeButton)
         header.appendChild(minimizeButton)
         return [header]
     }
@@ -101,11 +98,9 @@ class Prerequisite {
 
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("window-close").onclick = function () {
-        console.log("clicked")
         remote.getCurrentWindow().close();
     }
     document.getElementById("window-minimize").onclick = function () {
-        console.log("clicked")
         remote.getCurrentWindow().minimize();
     }
 })

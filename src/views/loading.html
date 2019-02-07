@@ -2,9 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
 </head>
 <body>
-
+<div class="loading-content">
+    <div class="lds-dual-ring"></div>
+    <p>Please wait while we prepare everything for you..</p>
+</div>
+<script>
+    const remote = require("electron").remote;
+    require(remote.getGlobal("paths").utilities + 'prerequisites.js')(__filename)
+</script>
 </body>
 </html>
