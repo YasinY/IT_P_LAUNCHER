@@ -1,10 +1,13 @@
 // entry point
 require('electron-reload')(__dirname)
 
-const {app, BrowserWindow} = require("electron");
+const {app, BrowserWindow} = require("electron")
+const {ipcMain} = require("electron")
+//const {ipcRenderer} = require("electron")
 const path = require("path")
 let window;
 
+//todo initialize that in a function too? idk
 if (!app.requestSingleInstanceLock()) {
     app.quit()
 } else {
@@ -17,7 +20,21 @@ if (!app.requestSingleInstanceLock()) {
     })
 }
 
+//todo create listener interface for each action, its bad to ahndle everything in one function
+function handleListener() {
+    ipcMain.on('login', (event, username, password) => {
+        console.log("Received! " + username, password) //todo use return-value on login event.returnValue
+        window.loadFile(global.paths.views + "loading.html")
+        window.webContents.once('dom-ready', () => {
+            window.webContents.send('login', true)
+            console.log("Sent login!")
+        })
+        // ipcRenderer.send('redirect', true) //TODO true = STATE OF LOGIN RESPONSE
+    })
+}
+
 function declareGlobals() {
+    console.log("Declaring globals..")
     const baseDirectory = __dirname + "/"
     const srcDirectory = baseDirectory + "src/"
     global.paths = {
@@ -34,11 +51,23 @@ function declareGlobals() {
 
 function prepareApplication() {
     declareGlobals()
-    window = new BrowserWindow({width: 720, height: 520, backgroundColor: '#2c447e', resizable: false, show: false, frame: false})
+    handleListener()
+    window = getWindowInstance()
     window.loadFile('main.html')
     window.once('ready-to-show', () => {
         window.show()
         window.focus()
+    })
+}
+
+function getWindowInstance() {
+    return new BrowserWindow({
+        width: 720,
+        height: 520,
+        backgroundColor: '#2c447e',
+        resizable: false,
+        show: false,
+        frame: false
     })
 }
 
