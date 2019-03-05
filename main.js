@@ -1,11 +1,15 @@
 // entry point
-require('electron-reload')(__dirname)
+//TODO DEV
+require('electron-reload')(__dirname, {
+    electron: require("path").join(__dirname, 'node_modules', '.bin', 'electron')
+})
 
 const {app, BrowserWindow} = require("electron")
 const {ipcMain} = require("electron")
 //const {ipcRenderer} = require("electron")
 const path = require("path")
 let window;
+
 
 //todo initialize that in a function too? idk
 if (!app.requestSingleInstanceLock()) {
@@ -53,7 +57,7 @@ function prepareApplication() {
     declareGlobals()
     handleListener()
     window = getWindowInstance()
-    window.loadFile('main.html')
+    window.loadFile('login_screen.html')
     window.once('ready-to-show', () => {
         window.show()
         window.focus()

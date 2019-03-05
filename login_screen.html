@@ -21,8 +21,8 @@
     </div>
 </div>
 <script>
-    const remote = require("electron").remote
-    require(remote.getGlobal("paths").utilities + 'prerequisites.js')(__filename)
+
+    require(require("electron").remote.getGlobal("paths").utilities + 'prerequisites.js')(__filename)
 </script>
 </body>
 </html>
