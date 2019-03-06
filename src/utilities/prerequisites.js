@@ -61,9 +61,6 @@ class Prerequisite {
     }
 
     //TODO maybe create ur own "create element" with options l
-    //TODO fix unicode for macOS
-
-
     getMetaData() {
         let meta = document.createElement("meta")
         meta.charset = "UTF-8"
