@@ -1,35 +1,35 @@
 let jwt = require("jsonwebtoken")
 let request = require("request")
 
-var data = JSON.stringify("haha lol")
-console.log(data)
-console.log(jwt.sign({ username: 'bar', password: 'maa' }, 'privateKey'))
+//document.cookie = 'token=hR_lVjFDKAUbuRRKmNCSZ3mlvpcWi1sA; expires=Fri, 31 Dec 9999 23:59:59 GMT; domain=https://my-secured-fake-site.com; path=/; secure';
+console.log(Buffer.from("test:testetr", "ascii").toString("base64"))
+console.log(new Date().toUTCString())
 
+function requestIdentification() {
+
+}
+function sendLogin(username, password) {
+
+}
 function submitData(username, password) {
-    var data = jwt.sign(JSON.stringify(username + password), "privateKey", "RS256");
+    let time = new Date(new Date().getTime() + 2 * 60000).toUTCString();
+    let key = Buffer.from(username + ":" + password, "ascii").toString("base64");
+    let data = jwt.sign({username: username, password: password}, key, 'RS256');
 
-    var options = {
+    let options = {
         headers: {
             'Content-Length': data.length,
             'Content-Type': 'application/json',
-            'user-agent': 'Mozilla/5.0' //TODO maybe custom user agent for validation serverside
+            'user-agent': 'Mozilla/5.0', //TODO maybe custom user agent for validation serverside
+            'cookie': 'token=' + key + '; expires=' + time + '; domain=it-processes.com; path=/; secure'
         },
         method: 'POST',
-        uri: "url here",
-        path: "login",
+        uri: 'url here',
+        path: 'login',
         body: data,
     }
     request.post(options, function (error, response, body) {
 
-    })
-    $.ajax({
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(username + password),
-        url: "todo url here",
-        success: function (data) {
-
-        }
     })
 }
 
