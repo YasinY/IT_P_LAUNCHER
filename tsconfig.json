@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDirs": ["src/", "dist/"],
+    "baseUrl": ".",
+    "paths": {
+      "@assets/*": [
+        "assets/*"
+      ],
+      "@stylesheets/*": [
+        "assets/css/*"
+      ],
+      "@views/*": [
+        "assets/html/*"
+      ],
+      "@images/*": [
+        "assets/images/*"
+      ],
+      "@renderings/*": [
+        "src/renderings/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

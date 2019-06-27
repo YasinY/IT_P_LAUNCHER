@@ -6,7 +6,6 @@ require('electron-reload')(__dirname, {
 
 const {app, BrowserWindow} = require("electron")
 const {ipcMain} = require("electron")
-//const {ipcRenderer} = require("electron")
 const path = require("path")
 let window;
 
@@ -26,11 +25,16 @@ if (!app.requestSingleInstanceLock()) {
 
 //todo create listener interface for each action, its bad to ahndle everything in one function
 function handleListener() {
+    handleLogin()
+}
+
+function handleLogin() {
     ipcMain.on('login', (event, username, password) => {
         console.log("Received! " + username, password) //todo use return-value on login event.returnValue
         window.loadFile(global.paths.views + "loading.html")
         window.webContents.once('dom-ready', () => {
-            window.webContents.send('login', true)
+            //todo request here
+            window.webContents.send('login', false)
             console.log("Sent login!")
         })
         // ipcRenderer.send('redirect', true) //TODO true = STATE OF LOGIN RESPONSE
@@ -51,6 +55,7 @@ function declareGlobals() {
         assets: path.join(baseDirectory, "assets/")
     }
     global.animated = JSON.parse(require("fs").readFileSync(global.paths.utilities + "animations.json", 'utf-8'))
+    //TODO CHECK REQUEST STATE
 }
 
 function prepareApplication() {

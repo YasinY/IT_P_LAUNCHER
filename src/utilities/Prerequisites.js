@@ -18,7 +18,7 @@ class Prerequisite {
             const paths = remote.getGlobal("paths")
             const potentialStylesheet = paths.stylesheets + baseName + ".css"
             const potentialRenderer = paths.logic + baseName + "_renderer.js"
-            let baseHead = this.getMetaData();
+            let baseHead = Prerequisite.getMetaData();
             if (fileSystem.existsSync(potentialStylesheet)) {
                 let stylesheet = document.createElement("link")
                 stylesheet.rel = "stylesheet"
@@ -49,7 +49,7 @@ class Prerequisite {
     }
 
     defineBody(baseName, animatedArray = false) {
-        let baseBody = this.getHeader()
+        let baseBody = Prerequisite.getHeader()
         if (animatedArray) { //if exists
             const potentialAnimation = remote.getGlobal("animated").find(element => element.site === baseName); //grab
             if (potentialAnimation !== undefined) {
@@ -61,7 +61,7 @@ class Prerequisite {
     }
 
     //TODO maybe create ur own "create element" with options l
-    getMetaData() {
+    static getMetaData() {
         let meta = document.createElement("meta")
         meta.charset = "UTF-8"
         let link = document.createElement("link")
@@ -76,7 +76,7 @@ class Prerequisite {
     }
 
 
-    getHeader() {
+    static getHeader() {
         let header = document.createElement("header")
         let closeButton = document.createElement("button")
         closeButton.innerHTML = "&#10005;"

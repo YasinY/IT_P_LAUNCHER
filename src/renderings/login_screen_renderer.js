@@ -3,6 +3,8 @@ const button = document
     .getElementsByClassName("btn btn-primary btn-lg")
     .item(0);
 
+
+
 button.addEventListener('click', () => {
     //app.getCurrentWindow().loadFile()
     const username = $('input[type=text]').val();
@@ -12,5 +14,7 @@ button.addEventListener('click', () => {
 })
 
 $("logo").attr("src", "./assets/logo.png")
+
+
 
 
