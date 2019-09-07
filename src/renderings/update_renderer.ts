@@ -1,3 +1,3 @@
-class Update_renderer {
+class update_renderer {
 
 }

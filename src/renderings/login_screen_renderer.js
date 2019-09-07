@@ -13,7 +13,7 @@ button.addEventListener('click', () => {
    /// app.getCurrentWindow().loadFile(app.getGlobal("paths").views + "loading.html")
 })
 
-$("logo").attr("src", "./assets/logo.png")
+$("logo").attr("src", "./assets/images/logo.png")
 
 
 
