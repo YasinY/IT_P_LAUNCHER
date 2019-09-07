@@ -1,25 +1,26 @@
 import {app, BrowserWindow} from "electron";
 import * as path from "path";
+import {EmitListenerHandler} from "./listeners/EmitListenerHandler";
+import {ipcMain} from "electron";
 
 
-let mainWindow: Electron.BrowserWindow;
+let currentWindow: Electron.BrowserWindow;
 
 function createWindow() {
-    mainWindow = getWindowInstance();
-    mainWindow.loadFile(path.resolve(__dirname, './assets/html/login_screen.html'));
-    mainWindow.webContents.openDevTools();
-    mainWindow.once("ready-to-show", () => {
-        mainWindow.show()
+    currentWindow = getWindowInstance();
+    currentWindow.loadFile(global.relativePaths.views  + "login_screen.html");
+    currentWindow.webContents.openDevTools();
+    currentWindow.once("ready-to-show", () => {
+        currentWindow.show()
     })
 
-    mainWindow.on("closed", () => {
-        mainWindow = null;
+    currentWindow.on("closed", () => {
+        currentWindow = null;
     });
 }
 
 function declareGlobals() {
     const baseDirectory = __dirname + "/"
-    console.log("declaring globals: " + baseDirectory)
     global.relativePaths = {
         baseDirectory: path.join(baseDirectory),
         assets: path.join(baseDirectory, "assets/"),
@@ -30,7 +31,6 @@ function declareGlobals() {
         renderings: path.join(baseDirectory, "renderings/"),
         utilities_src: path.join(baseDirectory, "utilities/")
     };
-    console.log("Declared globals!")
     global.animated = JSON.parse(require("fs").readFileSync(global.relativePaths.utilities + "animations.json", 'utf-8'))
 
     console.log("Saved global!")
@@ -38,7 +38,9 @@ function declareGlobals() {
 }
 
 function initializeListeners() {
-
+    console.log("Initializing listeners...")
+    let listenerHandler = new EmitListenerHandler(ipcMain, currentWindow);
+    listenerHandler.initialise();
 }
 
 function prepareApplication() {
@@ -65,10 +67,14 @@ if (!app.requestSingleInstanceLock()) {
     app.quit()
 } else {
     app.on("second-instance", () => {
-        if (mainWindow.isMinimized()) {
-            mainWindow.restore()
+        if(currentWindow == null) {
+            app.quit();
+            return;
+        }
+        if (currentWindow.isMinimized()) {
+            currentWindow.restore()
         } else {
-            mainWindow.focus()
+            currentWindow.focus()
         }
     })
 }
@@ -82,7 +88,7 @@ app.on("window-all-closed", () => {
 });
 
 app.on("activate", () => {
-    if (mainWindow === null) {
+    if (currentWindow === null) {
         createWindow();
     }
 });

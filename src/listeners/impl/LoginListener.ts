@@ -1,3 +1,0 @@
-class LoginListener extends Listener {
-
-}

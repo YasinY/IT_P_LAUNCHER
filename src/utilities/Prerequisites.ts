@@ -2,7 +2,6 @@
 import {remote} from "electron";
 import * as fileSystem from "fs"
 import * as path from "path"
-import * as $ from "jquery"
 
 class Prerequisite {
 
@@ -22,40 +21,37 @@ class Prerequisite {
             let linkElement = document.createElement("link");
             //TODO separate meta data
             //TODO figure out why it didnt work with jquery..
-            window.$ = window.jQuery = $ //its safe to say, after this line jquery can easily be used
             let bootstrap = document.createElement("link")
             bootstrap.rel = "stylesheet"
             bootstrap.href = paths.stylesheets + "bootstrap.css"
             bootstrap.type = "text/css"
-            $(document.head).append(bootstrap)
+            document.head.append(bootstrap)
             let header = document.createElement("link")
             header.rel = "stylesheet"
             header.href = paths.stylesheets + "header.css"
             header.type = "text/css"
-            $(document.head).append(header)
+            document.head.append(header)
             if (fileSystem.existsSync(potentialStylesheet)) {
                 let stylesheet = document.createElement("link")
                 stylesheet.rel = "stylesheet"
                 stylesheet.href = potentialStylesheet
                 stylesheet.type = "text/css"
-                $(document.head).append(stylesheet)
+                document.head.append(stylesheet)
             }
             if (fileSystem.existsSync(potentialRenderer)) {
                 console.log("Renderer exists!")
-                let renderer = $(document.createElement("script")).attr({
-                    type: 'text/javascript',
-                    src: potentialRenderer
-                })
-                $(document.head).append(renderer)
+                let renderer = document.createElement("script")
+                renderer.type = 'text/javascript'
+                renderer.src = potentialRenderer
+                document.head.append(renderer);
                //let renderer = $.getScript(potentialRenderer, () => console.log("Loaded renderer."));
             }
             if (animatedArray.some(element => element.site === baseName)) { //if contains
-                let animation = $(linkElement).attr({
-                    rel: "stylesheet",
-                    type: "text/css",
-                    href: paths.stylesheets + "keyframes.css"
-                })
-                $(document.head).append(animation)
+                let animation = linkElement
+                animation.rel = "stylesheet"
+                animation.type = "text/css"
+                animation.href = paths.stylesheets + "keyframes.css"
+                document.head.append(animation)
             }
             this.defineBody(baseName, animatedArray)
         }
@@ -67,10 +63,11 @@ class Prerequisite {
             const potentialAnimation = animatedArray.find(element => element.site === baseName); //grab
             if (potentialAnimation !== undefined) {
                 let animationType = potentialAnimation.type;
-                $(document.body).wrapInner("<div class='" + animationType + "-container'></div>")
+                document.body.insertAdjacentHTML('afterbegin', "<div class='" + animationType + "-container'>")
+                document.body.insertAdjacentHTML('beforeend', "</div>")
             }
         }
-        baseBody.forEach(element => $(document.body).prepend(element))
+        baseBody.forEach(element => document.body.prepend(element))
     }
 
 

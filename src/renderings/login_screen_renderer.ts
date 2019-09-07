@@ -7,11 +7,11 @@ console.log("test")
 
 button.addEventListener('click', () => {
     //app.getCurrentWindow().loadFile()
-    const username = $('input[type=text]').val();
-    const password = $('input[type=password]').val();
-    ipcRenderer.send('login', username, password)
+   // const username = $('input[type=text]').val();
+    //const password = $('input[type=password]').val();
+    ipcRenderer.send('login', "test", "test")
     /// app.getCurrentWindow().loadFile(app.getGlobal("paths").views + "loading.html")
 })
 
-$("logo").attr("src", "./assets/logo.png")
+//$("logo").attr("src", "./assets/logo.png")
 
