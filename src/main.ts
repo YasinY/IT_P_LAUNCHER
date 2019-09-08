@@ -8,6 +8,7 @@ let currentWindow: Electron.BrowserWindow;
 
 function createWindow() {
     currentWindow = getWindowInstance();
+    initializeListeners()
     currentWindow.loadFile(global.relativePaths.views  + "login_screen.html");
     currentWindow.webContents.openDevTools();
     currentWindow.once("ready-to-show", () => {
@@ -29,7 +30,8 @@ function declareGlobals() {
         views: path.join(baseDirectory, "assets/", "html/"),
         images: path.join(baseDirectory, "assets/", "images"),
         renderings: path.join(baseDirectory, "renderings/"),
-        utilities_src: path.join(baseDirectory, "utilities/")
+        utilities_src: path.join(baseDirectory, "utilities/"),
+        templates: path.join(baseDirectory, "assets/", "compiledTemplates/")
     };
     global.animated = JSON.parse(require("fs").readFileSync(global.relativePaths.utilities + "animations.json", 'utf-8'))
 
@@ -43,16 +45,20 @@ function initializeListeners() {
     listenerHandler.initialise();
 }
 
+function initialiseTemplateEngine() {
+
+}
 function prepareApplication() {
     console.log("Starting application...")
+    initialiseTemplateEngine()
     declareGlobals()
-    initializeListeners()
     createWindow()
     console.log("Application should now appear..")
 }
 
 function getWindowInstance() {
     return new BrowserWindow({
+
         width: 720,
         height: 520,
         show: false,
