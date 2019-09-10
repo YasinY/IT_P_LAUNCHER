@@ -1,14 +1,20 @@
-export class LoginEmitListener implements IEmitListener {
+import {EmitListener} from "../EmitListener";
+
+export class LoginEmitListener extends EmitListener {
+
+    getDefaultArguments(): Parameters<(username: string, password: string) => void> {
+        return ["test", "test"];
+    }
 
     getEmitTrigger(): string {
         return "login";
     }
 
-    onEmit(currentWindow: BrowserWindow): Function {
+    onEmit(): Function {
         return (event: any, username: string, password: string) => { //TODO figure out why event cant have a type other than any
-            currentWindow.loadFile(global.relativePaths.views + "loading.html")
+            //this.currentWindow.loadFile(global.relativePaths.views + "loading.html")
             console.log("received " + username + " and " + password);
-            currentWindow.webContents.once('dom-ready', () => {
+            super.getCurrentWindow().webContents.once('dom-ready', () => {
                 //event.reply('login', false)
                 console.log("Sent login!")
             })

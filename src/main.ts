@@ -6,10 +6,14 @@ import {ipcMain} from "electron";
 
 let currentWindow: Electron.BrowserWindow;
 
+let listenerHandler : EmitListenerHandler;
+
 function createWindow() {
     currentWindow = getWindowInstance();
+    currentWindow.loadFile(global.relativePaths.views + "login_screen.html")
+    //currentWindow.loadURL("data:text/html;charset-UTF-8," + encodeURIComponent("<b>test</b>"))
     initializeListeners()
-    currentWindow.loadFile(global.relativePaths.views  + "login_screen.html");
+    //currentWindow.loadURL("data:text/html;charset=UTF-8," + encodeURIComponent())
     currentWindow.webContents.openDevTools();
     currentWindow.once("ready-to-show", () => {
         currentWindow.show()
@@ -27,21 +31,17 @@ function declareGlobals() {
         assets: path.join(baseDirectory, "assets/"),
         utilities: path.join(baseDirectory, "assets/", "utilities/"),
         stylesheets: path.join(baseDirectory, "assets/", "css/"),
-        views: path.join(baseDirectory, "assets/", "html/"),
         images: path.join(baseDirectory, "assets/", "images"),
         renderings: path.join(baseDirectory, "renderings/"),
         utilities_src: path.join(baseDirectory, "utilities/"),
-        templates: path.join(baseDirectory, "assets/", "compiledTemplates/")
+        views: path.join(baseDirectory, "assets/", "html/")
     };
     global.animated = JSON.parse(require("fs").readFileSync(global.relativePaths.utilities + "animations.json", 'utf-8'))
-
-    console.log("Saved global!")
-    console.log(global.animated)
 }
 
 function initializeListeners() {
+    listenerHandler = new EmitListenerHandler(ipcMain, currentWindow)
     console.log("Initializing listeners...")
-    let listenerHandler = new EmitListenerHandler(ipcMain, currentWindow);
     listenerHandler.initialise();
 }
 
@@ -50,15 +50,17 @@ function initialiseTemplateEngine() {
 }
 function prepareApplication() {
     console.log("Starting application...")
-    initialiseTemplateEngine()
     declareGlobals()
+    initialiseTemplateEngine()
     createWindow()
     console.log("Application should now appear..")
 }
 
 function getWindowInstance() {
     return new BrowserWindow({
-
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js')
+        },
         width: 720,
         height: 520,
         show: false,

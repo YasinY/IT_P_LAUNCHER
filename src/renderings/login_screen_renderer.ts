@@ -9,7 +9,8 @@ button.addEventListener('click', () => {
     //app.getCurrentWindow().loadFile()
    // const username = $('input[type=text]').val();
     //const password = $('input[type=password]').val();
-    ipcRenderer.send('login', "test", "test")
+    //ipcRenderer.send('login', "test", "test")
+    ipcRenderer.send('render', 'loading')
     /// app.getCurrentWindow().loadFile(app.getGlobal("paths").views + "loading.html")
 })
 

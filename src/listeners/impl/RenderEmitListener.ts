@@ -1,27 +1,32 @@
-import handleBar = require("handlebars");
+import {EmitListener} from "../EmitListener";
+
 import fs = require("fs");
+import BrowserWindow = Electron.BrowserWindow;
 
+export class RenderEmitListener extends EmitListener {
 
-class RenderEmitListener implements IEmitListener {
+    constructor(currentWindow: BrowserWindow) {
+        super(currentWindow);
+    }
 
     getEmitTrigger(): string {
         return "render";
     }
 
     //TODO error logging!!!
-    onEmit(currentWindow: Electron.BrowserWindow): Function {
+    onEmit(): Function {
         return (event: any, viewName: string, ... args: object[]) => {
-            let charset = "UTF-8";
-            let path = global.relativePaths.templates + viewName + ".html";
+            let path = global.relativePaths.templates + viewName + ".ejs";
             if (!fs.existsSync(path)) {
-                alert("Couldn't find view on path " + path);
+                console.log("Couldnt find view on path " + path);
                 return;
             }
-            let viewContent = fs.readFileSync(path, charset);
-            let template = handleBar.compile(viewContent);
-
-            //currentWindow.exec(path)
+            //console.log("Displaying content: " + templateHtml);
         };
+    }
+
+    getDefaultArguments(): {} {
+        return {};
     }
 
 }
