@@ -1,0 +1,56 @@
+body {
+    background-color: #164780;
+    color: white;
+    font-family: "Helvetica", sans-serif;
+}
+
+#login_box {
+    -webkit-box-shadow: -1px -1px 81px 7px rgba(0, 0, 0, 0.38);
+    -moz-box-shadow: -1px -1px 81px 7px rgba(0, 0, 0, 0.38);
+    box-shadow: -1px -1px 81px 7px rgba(0, 0, 0, 0.38);
+    border-radius: 10px;
+}
+
+label {
+    margin-top: 10px;
+    margin-bottom: 1px;
+}
+
+input {
+    border-radius: 20px;
+    margin-bottom: 5px;
+    caret-color: white;
+    color: white;
+}
+
+
+input[type="text"]::placeholder, input[type="password"]::placeholder {
+    color: lightgray;
+}
+
+input[type="text"], input[type="password"] {
+    background-color: #185091;
+    color: white;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    background-color: #2167b8;
+    color: lightgray;
+}
+
+#logo_container {
+    width: 100%;
+    padding-top: 35px;
+}
+
+#logo_container img {
+    display: block;
+    margin: 0 auto;
+}
+
+#login_button {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px 10px 5px 10px;
+    border-radius: 15%;
+}

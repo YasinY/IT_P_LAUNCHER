@@ -1,5 +1,5 @@
-let remote = require("electron").remote;
-
+let app = require("electron");
+let remote = app.remote;
 let paths = remote.getGlobal("relativePaths");
 let animated = remote.getGlobal("animated");
 
@@ -13,6 +13,7 @@ const RENDERER_EXTENSION = ".js";
 const HTML_EXTENSION = ".html";
 const BOOTSTRAP_ELEMENT = "bootstrap"
 const HEADER_ELEMENT = "header"
+const HEADER_ELEMENT_MAC_OS = HEADER_ELEMENT + "_macOs";
 const LINK_ELEMENT = "link"
 
 
@@ -25,25 +26,38 @@ const CSS_TYPE = "text/css";
 const URL_SEPARATOR = "/"
 const EMPTY_STRING_REPLACEMENT = ""
 
+function defineEssentialStyleesheets() {
+
+}
+
 window.addEventListener(EVENT_TRIGGER_DOM_LOADED, () => {
+    let isMac = remote.process.platform === "darwin";
     let fileName = getFileName();
-
     let bootstrapPath = getStylesheetPath(BOOTSTRAP_ELEMENT)
-    let bootstrap = getStylesheetElement(bootstrapPath)
-
-    let headerPath = getStylesheetPath(HEADER_ELEMENT)
-    let header = getStylesheetElement(headerPath)
-
-    document.head.append(bootstrap, header)
+    if(!fileExists(bootstrapPath)) {
+        console.error("Couldn't find stylesheet for bootstrap.")
+    }
+    let bootstrapStylesheet = getStylesheetElement(bootstrapPath)
+    let headerPath = getStylesheetPath(isMac ? HEADER_ELEMENT_MAC_OS : HEADER_ELEMENT)
+    if(!fileExists(headerPath)) {
+        console.error("Couldn't find stylesheet for header.")
+    }
+    let headerStylesheet = getStylesheetElement(headerPath)
+    document.head.append(bootstrapStylesheet, headerStylesheet)
 
     let stylesheetPath = getStylesheetPath(fileName);
-    if (fs.existsSync(stylesheetPath)) {
+    if (fileExists(stylesheetPath)) {
         let styleSheetElement = getStylesheetElement(stylesheetPath)
         document.head.append(styleSheetElement)
     }
+    let titleBar = document.createElement("header");
+    if (remote.process.platform === "win32") { //only windows gets buttons
+        titleBar = addFrameButtons(titleBar);
+    }
+    document.body.prepend(titleBar)
 
     let rendererPath = getRendererPath(fileName);
-    if (fs.existsSync(rendererPath)) {
+    if (fileExists(rendererPath)) {
         let rendererElement = getRendererElement(rendererPath);
         document.head.append(rendererElement)
     }
@@ -51,13 +65,33 @@ window.addEventListener(EVENT_TRIGGER_DOM_LOADED, () => {
     let animation = animated.find((element: any) => element.site === fileName);
     if (animation != undefined) {
         let animationsPath = getStylesheetPath(KEYFRAMES_STYLESHEET_NAME);
-        if (fs.existsSync(animationsPath)) {
-           // document.body.insertAdjacentHTML('afterbegin', "<div class='" + animation.type + "-container'>")
+        if (fileExists(animationsPath)) {
+            // document.body.insertAdjacentHTML('afterbegin', "<div class='" + animation.type + "-container'>")
         }
     }
-    console.log(fileName)
 })
 
+function fileExists(path: string) : boolean {
+    return fs.existsSync(path);
+}
+function addFrameButtons(titleBar: HTMLHeadElement) {
+    //if windows, frame gets disabled so this is our custom impl
+    let closeButton = getButtonElement("&#10005;", "window-close");
+    let minimizeButton = getButtonElement("&minus;", "window-minimize");
+    let maximizeButton = getButtonElement("&#128470;", "window-maximize");
+    registerButtonFunctions(closeButton, minimizeButton)
+    titleBar.append(closeButton, minimizeButton, maximizeButton)
+    return titleBar;
+}
+
+function registerButtonFunctions(closeButton : HTMLButtonElement, minimizeButton : HTMLButtonElement) {
+    closeButton.onclick = function () {
+        remote.getCurrentWindow().close();
+    }
+    minimizeButton.onclick = function () {
+        remote.getCurrentWindow().minimize();
+    }
+}
 
 function getFileName(): string {
     let fileName = location.pathname.split(URL_SEPARATOR).slice(-1)[0];
@@ -75,7 +109,6 @@ function getStylesheetElement(path: string): HTMLLinkElement {
     linkElement.rel = STYLESHEET_RELATION;
     linkElement.type = CSS_TYPE;
     if (name != null) {
-
         linkElement.href = path;
     }
     return linkElement;
@@ -83,9 +116,17 @@ function getStylesheetElement(path: string): HTMLLinkElement {
 
 function getRendererElement(rendererPath: string): HTMLScriptElement {
     let scriptElement = getScriptElement();
-    scriptElement.type = 'text/javascript'
-    scriptElement.src = rendererPath
+    scriptElement.type = 'text/javascript';
+    scriptElement.src = rendererPath;
     return scriptElement;
+}
+
+function getButtonElement(innerHTML: string, id: string): HTMLButtonElement {
+    let buttonElement = document.createElement("button");
+    buttonElement.type = "button";
+    buttonElement.innerHTML = innerHTML;
+    buttonElement.id = id;
+    return buttonElement;
 }
 
 function getLinkElement(): HTMLLinkElement {
