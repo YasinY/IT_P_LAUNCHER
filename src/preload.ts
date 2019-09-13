@@ -26,13 +26,8 @@ const CSS_TYPE = "text/css";
 const URL_SEPARATOR = "/"
 const EMPTY_STRING_REPLACEMENT = ""
 
-function defineEssentialStyleesheets() {
-
-}
-
-window.addEventListener(EVENT_TRIGGER_DOM_LOADED, () => {
+function defineEssentialStylesheets(): void {
     let isMac = remote.process.platform === "darwin";
-    let fileName = getFileName();
     let bootstrapPath = getStylesheetPath(BOOTSTRAP_ELEMENT)
     if(!fileExists(bootstrapPath)) {
         console.error("Couldn't find stylesheet for bootstrap.")
@@ -43,8 +38,27 @@ window.addEventListener(EVENT_TRIGGER_DOM_LOADED, () => {
         console.error("Couldn't find stylesheet for header.")
     }
     let headerStylesheet = getStylesheetElement(headerPath)
-    document.head.append(bootstrapStylesheet, headerStylesheet)
 
+
+    document.head.append(bootstrapStylesheet, headerStylesheet)
+}
+function defineKeyframes(fileName : string): void {
+    let animation = animated.find((element: any) => element.site === fileName);
+    if (animation != undefined) {
+        let animationsPath = getStylesheetPath(KEYFRAMES_STYLESHEET_NAME);
+        let animationElement = getStylesheetElement(animationsPath);
+        document.head.append(animationElement)
+        if (fileExists(animationsPath)) {
+            let animationWrapper = document.createElement("div")
+            animationWrapper.className =  animation.type + "-container";
+            wrapInner(document.body, animationWrapper)
+        }
+    }
+}
+window.addEventListener(EVENT_TRIGGER_DOM_LOADED, () => {
+    defineEssentialStylesheets();
+    let fileName = getFileName();
+    defineKeyframes(fileName);
     let stylesheetPath = getStylesheetPath(fileName);
     if (fileExists(stylesheetPath)) {
         let styleSheetElement = getStylesheetElement(stylesheetPath)
@@ -55,22 +69,23 @@ window.addEventListener(EVENT_TRIGGER_DOM_LOADED, () => {
         titleBar = addFrameButtons(titleBar);
     }
     document.body.prepend(titleBar)
-
     let rendererPath = getRendererPath(fileName);
     if (fileExists(rendererPath)) {
         let rendererElement = getRendererElement(rendererPath);
         document.head.append(rendererElement)
     }
 
-    let animation = animated.find((element: any) => element.site === fileName);
-    if (animation != undefined) {
-        let animationsPath = getStylesheetPath(KEYFRAMES_STYLESHEET_NAME);
-        if (fileExists(animationsPath)) {
-            // document.body.insertAdjacentHTML('afterbegin', "<div class='" + animation.type + "-container'>")
-        }
-    }
-})
+}, false)
 
+function wrapInner(parent: Node, wrapper : Node) {
+    if (typeof wrapper === "string")
+        wrapper = document.createElement(wrapper);
+
+    var div = parent.appendChild(wrapper);
+
+    while(parent.firstChild !== wrapper)
+        wrapper.appendChild(parent.firstChild);
+}
 function fileExists(path: string) : boolean {
     return fs.existsSync(path);
 }
@@ -144,4 +159,8 @@ function getRendererPath(fileName: string): string {
 
 function getStylesheetPath(fileName: string): string {
     return paths.stylesheets + fileName + CSS_EXTENSION;
+}
+
+function getKeyframesPath() {
+    return paths.stylesheets + 'keyframes' + CSS_EXTENSION
 }

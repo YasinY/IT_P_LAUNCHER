@@ -26,7 +26,7 @@
     "uglify:obfuscated": "uglifyjs-folder ./obfuscated/dist -y --output ./prod/main.js",
     "deploy": "npm run compile",
     "deploy:windows": "npm run test && npm run compile && npm run obfuscate && npm run copyassets:windows:prod && npm run uglify:obfuscated",
-    "deploy:linux": "npm run test && npm npm run compile && npm run copyassets:linux",
+    "deploy:linux": "npm run test && npm npm run compile && && npm run obfuscate && npm run copyassets:linux:obfuscated && electron-packager ./obfuscated/dist --overwrite --asar --dist=darwin",
     "deploy:soft": "npm run test && npm run compile && npm run obfuscate && npm run copyassets:windows:obfuscated && electron-packager ./obfuscated/dist --overwrite --asar"
   },
   "author": "Yasin Yazici",

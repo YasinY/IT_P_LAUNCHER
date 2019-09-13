@@ -70,8 +70,6 @@ class Prerequisite {
         baseBody.forEach(element => document.body.prepend(element))
     }
 
-
-
     static getHeader() {
         let header = document.createElement("header")
         let closeButton = document.createElement("button")
