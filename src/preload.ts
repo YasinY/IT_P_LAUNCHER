@@ -29,12 +29,12 @@ const EMPTY_STRING_REPLACEMENT = ""
 function defineEssentialStylesheets(): void {
     let isMac = remote.process.platform === "darwin";
     let bootstrapPath = getStylesheetPath(BOOTSTRAP_ELEMENT)
-    if(!fileExists(bootstrapPath)) {
+    if (!fileExists(bootstrapPath)) {
         console.error("Couldn't find stylesheet for bootstrap.")
     }
     let bootstrapStylesheet = getStylesheetElement(bootstrapPath)
     let headerPath = getStylesheetPath(isMac ? HEADER_ELEMENT_MAC_OS : HEADER_ELEMENT)
-    if(!fileExists(headerPath)) {
+    if (!fileExists(headerPath)) {
         console.error("Couldn't find stylesheet for header.")
     }
     let headerStylesheet = getStylesheetElement(headerPath)
@@ -42,7 +42,8 @@ function defineEssentialStylesheets(): void {
 
     document.head.append(bootstrapStylesheet, headerStylesheet)
 }
-function defineKeyframes(fileName : string): void {
+
+function defineKeyframes(fileName: string): void {
     let animation = animated.find((element: any) => element.site === fileName);
     if (animation != undefined) {
         let animationsPath = getStylesheetPath(KEYFRAMES_STYLESHEET_NAME);
@@ -50,11 +51,12 @@ function defineKeyframes(fileName : string): void {
         document.head.append(animationElement)
         if (fileExists(animationsPath)) {
             let animationWrapper = document.createElement("div")
-            animationWrapper.className =  animation.type + "-container";
+            animationWrapper.className = animation.type + "-container";
             wrapInner(document.body, animationWrapper)
         }
     }
 }
+
 window.addEventListener(EVENT_TRIGGER_DOM_LOADED, () => {
     defineEssentialStylesheets();
     let fileName = getFileName();
@@ -77,18 +79,18 @@ window.addEventListener(EVENT_TRIGGER_DOM_LOADED, () => {
 
 }, false)
 
-function wrapInner(parent: Node, wrapper : Node) {
+function wrapInner(parent: Node, wrapper: Node) {
     if (typeof wrapper === "string")
         wrapper = document.createElement(wrapper);
-
-    var div = parent.appendChild(wrapper);
-
-    while(parent.firstChild !== wrapper)
+    parent.appendChild(wrapper);
+    while (parent.firstChild !== wrapper)
         wrapper.appendChild(parent.firstChild);
 }
-function fileExists(path: string) : boolean {
+
+function fileExists(path: string): boolean {
     return fs.existsSync(path);
 }
+
 function addFrameButtons(titleBar: HTMLHeadElement) {
     //if windows, frame gets disabled so this is our custom impl
     let closeButton = getButtonElement("&#10005;", "window-close");
@@ -99,7 +101,7 @@ function addFrameButtons(titleBar: HTMLHeadElement) {
     return titleBar;
 }
 
-function registerButtonFunctions(closeButton : HTMLButtonElement, minimizeButton : HTMLButtonElement) {
+function registerButtonFunctions(closeButton: HTMLButtonElement, minimizeButton: HTMLButtonElement) {
     closeButton.onclick = function () {
         remote.getCurrentWindow().close();
     }
