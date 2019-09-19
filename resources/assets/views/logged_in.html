@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello!</title>
+</head>
+<script>
+    let electron = require("electron").remote;
+    require(electron.getGlobal("paths").stylesheets + "")
+</script>
+<body>
+<div class="main-content">
+    <div class="product">
+
+    </div>
+    <div class="product">
+
+    </div>
+    <div class="product">
+
+    </div>
+</div>
+</body>
+<script>
+    require(electron.getGlobal("paths").utilities + 'prerequisites.js')(__filename)
+</script>
+</html>

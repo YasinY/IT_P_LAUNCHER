@@ -9,7 +9,8 @@ let currentWindow: Electron.BrowserWindow;
 let listenerHandler : EmitListenerHandler;
 
 function createWindow() {
-    currentWindow = getWindowInstance();
+    let isWindows = process.platform === "win32";
+    currentWindow = getWindowInstance(isWindows);
     currentWindow.loadFile(global.relativePaths.views + "login_screen.html")
     //currentWindow.loadURL("data:text/html;charset-UTF-8," + encodeURIComponent("<b>test</b>"))
     initializeListeners()
@@ -56,7 +57,7 @@ function prepareApplication() {
     console.log("Application should now appear..")
 }
 
-function getWindowInstance() {
+function getWindowInstance(windows : boolean) {
     return new BrowserWindow({
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')
@@ -67,7 +68,8 @@ function getWindowInstance() {
         backgroundColor: '#2c447e',
         resizable: false,
         title: "IT-Processes",
-        frame: false
+        frame: !windows,
+        titleBarStyle: (!windows) ? "hidden" : "default"
     })
 }
 
@@ -90,9 +92,7 @@ if (!app.requestSingleInstanceLock()) {
 app.on("ready", prepareApplication);
 
 app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        app.quit();
-    }
+    app.quit()
 });
 
 app.on("activate", () => {
