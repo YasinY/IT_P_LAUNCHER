@@ -21,6 +21,9 @@ header button[type="button"] {
 header button[type="button"]:first-child { /*first child from right to left*/
     border-left: 1px solid #205da3;
 }
+header button[type="button"]:last-child { /*first child from right to left*/
+    border-right: 1px solid #205da3;
+}
 
 header button[type="button"]:active {
     background-color: #2167b8;
