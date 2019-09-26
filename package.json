@@ -4,6 +4,26 @@
   "private": true,
   "description": "Launcher for IT-PROCESSES by Yasin Yazici (CEO)",
   "main": "main.js",
+  "nyc": {
+    "extends": "@istanbuljs/nyc-config-typescript",
+    "check-coverage": true,
+    "all": true,
+    "extension": [
+      ".js",
+      ".jsx",
+      ".ts",
+      ".tsx"
+    ],
+    "include": [
+      "src/**/!(*.test.*).[tj]s?(x)"
+    ],
+    "reporter": [
+      "html",
+      "lcov",
+      "text",
+      "text-summary"
+    ]
+  },
   "scripts": {
     "compile": "tsc",
     "watch": "tsc -w",
@@ -11,11 +31,11 @@
     "copyassets:windows": "npm run buildassets && Xcopy /D /I /E /Y \"./assets\" \"./dist/assets\"",
     "copyassets:windows:obfuscated": "npm run buildassets && Xcopy /D /I /E /Y \"./assets\" \"./obfuscated/dist/assets\"",
     "copyassets:windows:prod": "npm run buildassets && Xcopy /D /I /E /Y \"./assets\" \"./prod/assets\"",
-    "copyassets:linux": "cp -a \"./assets/.\" \"./dist/assets\"",
-    "copyassets:linux:obfuscated": "cp -a ./assets/. /obfuscated/dist/assets",
+    "copyassets:linux": "cp -a ./assets/. ./dist/assets",
+    "copyassets:linux:obfuscated": "cp -a ./assets/ ./obfuscated/dist/assets",
     "evaluate": "tslint -c tslint.json -p tsconfig.json",
-    "test": "alsatian \"./tests/**/*.spec.ts\n",
-    "check-coverage": "nyc --reporter=lcov --reporter=html npm run test && nyc report",
+    "test": "alsatian ./tests/**/*.spec.ts",
+    "check-coverage": "nyc npm run test && nyc report",
     "start": "electron dist/main.js",
     "start:build:mac": "npm run compile && npm run copyassets:linux && npm run start",
     "start:build:windows": "npm run copyassets:windows && npm run compile && npm run start",
@@ -27,27 +47,30 @@
     "uglify:obfuscated": "uglifyjs-folder ./obfuscated/dist -y --output ./prod/main.js",
     "deploy": "npm run compile",
     "deploy:windows": "npm run test && npm run compile && npm run obfuscate && npm run copyassets:windows:prod && npm run uglify:obfuscated",
-    "deploy:linux": "npm run test && npm npm run compile && && npm run obfuscate && npm run copyassets:linux:obfuscated && electron-packager ./obfuscated/dist --overwrite --asar --dist=darwin",
+    "deploy:linux": "npm run test && npm run compile && npm run obfuscate && npm run copyassets:linux:obfuscated && electron-packager ./obfuscated/dist --overwrite --asar --dist=darwin",
     "deploy:soft": "npm run test && npm run compile && npm run obfuscate && npm run copyassets:windows:obfuscated && electron-packager ./obfuscated/dist --overwrite --asar"
   },
   "author": "Yasin Yazici",
   "license": "ISC",
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^0.1.3",
     "alsatian": "^2.4.0",
-    "electron-packager": "^14.0.5",
-    "electron-reload": "^1.4.0",
+    "electron-packager": "^14.0.6",
+    "electron-reload": "^1.5.0",
     "javascript-obfuscator": "^0.18.1",
-    "node": "^12.4.0",
+    "node": "^12.11.0",
     "nyc": "^14.1.1",
-    "ts-loader": "^6.0.4",
-    "typescript": "^3.5.2",
+    "source-map-support": "^0.5.13",
+    "ts-loader": "^6.1.2",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3",
     "uglify-js": "^3.6.0",
     "uglifyjs-folder": "^1.5.1"
   },
   "dependencies": {
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
-    "electron": "^3.1.11",
+    "electron": "^3.1.13",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "popper.js": "^1.15.0",
