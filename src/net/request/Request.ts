@@ -37,18 +37,18 @@ export abstract class Request {
     }
 
 
-    protected performRequest(): Promise<http.ClientRequest> {
+    public performRequest(): Promise<http.ClientRequest> {
         return new Promise((resolve, reject) => {
             if (this.requestDestination === null) {
-                reject(new Error("Request destination is null."))
+                reject(new Error("Request destination is null."));
                 return;
             }
             if (this.requestDestination.url.length === 0) {
-                reject(new Error("Request destination url is not set"))
+                reject(new Error("Request destination url is not set"));
                 return;
             }
             if (this.requestDestination.port < 0) {
-                reject(new Error("Request destination port is not set."))
+                reject(new Error("Request destination port is not set."));
                 return;
             }
             console.log("Doing request..")
@@ -62,12 +62,12 @@ export abstract class Request {
                         //reject(socket.authorizationError)
                     }
                     if(fingerPrint.localeCompare(this.serverFingerprint) !== 0) {
-                        reject(new Error("Server is not verifiable! " + fingerPrint + "->" + this.serverFingerprint))
+                        reject(new Error("Server is not verifiable! " + fingerPrint + " -> " + this.serverFingerprint));
                     }
-                    console.log("Secure connect completed!")
+                    console.log("Secure connect completed!");
                     resolve(request);
                 })
-            })
+            });
             request.once('error', (error: Error) => {
                 reject(error)
             })
