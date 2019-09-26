@@ -1,19 +1,18 @@
-class LoginHandler {
-
-    private static loginHandler: LoginHandler;
+export class LoginValidator {
+    private readonly MAX_USERNAME_LENGTH = 32;
+    private readonly ASCII_REGEX = /^[\x00-\x7F]*$/;
+    private static loginValidator: LoginValidator;
 
 
     public canLogin(username: string): boolean {
-        return username.length <= 32 && this.isASCII(username);
+        return username.length <= this.MAX_USERNAME_LENGTH && this.isASCII(username);
     }
 
-    private isASCII(str: string) : boolean {
-        return /^[\x00-\x7F]*$/.test(str);
+    private isASCII(str: string): boolean {
+        return this.ASCII_REGEX.test(str);
     }
 
-    public static getInstance() : LoginHandler {
-        return this.loginHandler === null ? this.loginHandler = new LoginHandler() : this.loginHandler;
+    public static getInstance(): LoginValidator {
+        return this.loginValidator === null ? this.loginValidator = new LoginValidator() : this.loginValidator;
     }
-
-
 }
