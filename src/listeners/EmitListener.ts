@@ -8,7 +8,6 @@ export abstract class EmitListener {
     public constructor(currentWindow: BrowserWindow) {
         this.currentWindow = currentWindow;
     }
-    public abstract getDefaultArguments(): Parameters<(...args: any) => void>;
 
     public abstract getEmitTrigger(): string;
 

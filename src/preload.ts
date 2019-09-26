@@ -1,10 +1,10 @@
+import {Paths} from "./Paths";
+
 let app = require("electron");
 let remote = app.remote;
-let paths = remote.getGlobal("relativePaths");
-let animated = remote.getGlobal("animated");
 
-console.log(paths)
 let fs = require("fs");
+let path = require("path");
 
 const EVENT_TRIGGER_DOM_LOADED = "DOMContentLoaded";
 
@@ -38,13 +38,13 @@ function defineEssentialStylesheets(): void {
         console.error("Couldn't find stylesheet for header.")
     }
     let headerStylesheet = getStylesheetElement(headerPath)
-
-
     document.head.append(bootstrapStylesheet, headerStylesheet)
 }
 
 function defineKeyframes(fileName: string): void {
-    let animation = animated.find((element: any) => element.site === fileName);
+    let animationPath = path.join(Paths.UTILITIES, "animations.json");
+    let animationJson = JSON.parse(require("fs").readFileSync(animationPath, 'utf-8'));
+    let animation = animationJson.find((element: any) => element.site === fileName);
     if (animation != undefined) {
         let animationsPath = getStylesheetPath(KEYFRAMES_STYLESHEET_NAME);
         let animationElement = getStylesheetElement(animationsPath);
@@ -156,13 +156,13 @@ function getScriptElement(): HTMLScriptElement {
 
 function getRendererPath(fileName: string): string {
 
-    return paths.renderings + fileName + RENDERER_TRAIT + RENDERER_EXTENSION;
+    return Paths.RENDERINGS + fileName + RENDERER_TRAIT + RENDERER_EXTENSION;
 }
 
 function getStylesheetPath(fileName: string): string {
-    return paths.stylesheets + fileName + CSS_EXTENSION;
+    return Paths.STYLESHEETS + fileName + CSS_EXTENSION;
 }
 
 function getKeyframesPath() {
-    return paths.stylesheets + 'keyframes' + CSS_EXTENSION
+    return Paths.STYLESHEETS + 'keyframes' + CSS_EXTENSION
 }

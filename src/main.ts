@@ -2,7 +2,8 @@ import {app, BrowserWindow} from "electron";
 import * as path from "path";
 import {EmitListenerHandler} from "./listeners/EmitListenerHandler";
 import {ipcMain} from "electron";
-
+import {LoginRequest} from "./net/request/impl/LoginRequest";
+import {Paths} from "./Paths";
 
 let currentWindow: Electron.BrowserWindow;
 
@@ -11,7 +12,7 @@ let listenerHandler : EmitListenerHandler;
 function createWindow() {
     let isWindows = process.platform === "win32";
     currentWindow = getWindowInstance(isWindows);
-    currentWindow.loadFile(global.relativePaths.views + "login_screen.html")
+    currentWindow.loadFile(Paths.VIEWS + "login_screen.html")
     //currentWindow.loadURL("data:text/html;charset-UTF-8," + encodeURIComponent("<b>test</b>"))
     initializeListeners()
     //currentWindow.loadURL("data:text/html;charset=UTF-8," + encodeURIComponent())
@@ -25,19 +26,18 @@ function createWindow() {
     });
 }
 
+app.on('certificate-error', function(event, webContents, url, error,
+                                     certificate, callback) {
+    console.log("Certificate error!")
+    event.preventDefault();
+    callback(true);
+});
 function declareGlobals() {
-    const baseDirectory = __dirname + "/"
-    global.relativePaths = {
-        baseDirectory: path.join(baseDirectory),
-        assets: path.join(baseDirectory, "assets/"),
-        utilities: path.join(baseDirectory, "assets/", "utilities/"),
-        stylesheets: path.join(baseDirectory, "assets/", "css/"),
-        images: path.join(baseDirectory, "assets/", "images"),
-        renderings: path.join(baseDirectory, "renderings/"),
-        utilities_src: path.join(baseDirectory, "utilities/"),
-        views: path.join(baseDirectory, "assets/", "html/")
-    };
-    global.animated = JSON.parse(require("fs").readFileSync(global.relativePaths.utilities + "animations.json", 'utf-8'))
+    let request = new LoginRequest();
+    request.perform();
+    request.perform();
+    request.perform();
+    request.perform();
 }
 
 function initializeListeners() {
@@ -55,12 +55,13 @@ function prepareApplication() {
     initialiseTemplateEngine()
     createWindow()
     console.log("Application should now appear..")
+
 }
 
 function getWindowInstance(windows : boolean) {
     return new BrowserWindow({
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js')
+            preload: path.join(__dirname, 'preload.js'),
         },
         width: 720,
         height: 520,

@@ -1,6 +1,12 @@
-
+.gitignore
 .idea/
 .idea/workspace.xml
+.nyc_output/
+it_p_launcher-win32-x64/
+coverage/
+prod/
+dist/
+package-lock.json
 
 node_modules/
 dist/
