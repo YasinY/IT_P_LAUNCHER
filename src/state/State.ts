@@ -1,19 +1,18 @@
-export enum State {
-    LOGGED_OUT = 200, //OK!
-    LOGGED_IN = 227, //custom, so we can differ between logged_out and logged_in
-    EXPIRED_SESSION_TOKEN = 453,
-    DISCONNECTED_CLIENT_NO_INTERNET = -1,
-    DISCONNECTED_SERVER_NOT_REACHABLE = -1,
-    INVALID_CREDENTIALS = 454,
-    INVALID_SESSION_TOKEN = 455,
-    INVALID_HARDWARE = 456,
-    BANNED_UUID = 457,
-    UNSUPPORTED_COUNTRY = 501, //not implemented response code
-    UNIDENTIFIED_RESPONSE = 0
-}
+export class State {
+    static readonly LOGGED_OUT = 200; //OK!
+    static readonly LOGGED_IN = 227; //custom, so we can differ between logged_out and logged_in
+    static readonly EXPIRED_SESSION_TOKEN = 453;
+    static readonly DISCONNECTED_CLIENT_NO_INTERNET = -1;
+    static readonly DISCONNECTED_SERVER_NOT_REACHABLE = -1;
+    static readonly INVALID_CREDENTIALS = 454;
+    static readonly INVALID_SESSION_TOKEN = 455;
+    static readonly INVALID_HARDWARE = 456;
+    static readonly BANNED_UUID = 457;
+    static readonly UNSUPPORTED_COUNTRY = 501; //not implemented response code
+    static readonly UNIDENTIFIED_RESPONSE = 0
 
-export namespace State {
-    export function parseResponse(statusCode: number) : State  {
-        return Object.keys(State).map(Number).find(k => !isNaN(k) && k === statusCode)
+    public static parseResponse(statusCode: number): State {
+        return Object.values(State).find((element) => !isNaN(element) && element === statusCode);
     }
 }
+

@@ -3,7 +3,7 @@ import {ipcRenderer} from "electron";
 const button = document
     .getElementsByClassName("btn btn-primary btn-lg")
     .item(0);
-console.log("test")
+console.log("Rendering login screen, on environment: " + global._isEnvironment('dev'))
 
 button.addEventListener('click', () => {
     const username = (document.querySelector('input[type=text]') as HTMLInputElement).value;

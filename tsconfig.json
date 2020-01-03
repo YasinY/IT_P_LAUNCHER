@@ -4,6 +4,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
+    "noEmitOnError": true,
     "experimentalDecorators": true,
     "sourceMap": true,
     "outDir": "dist",
@@ -11,6 +12,7 @@
     "baseUrl": ".",
     "listFiles": true,
     "allowJs": false,
+    "typeRoots": ["./src/types"],
     "paths": {
       "@assets/*": [
         "assets/*"

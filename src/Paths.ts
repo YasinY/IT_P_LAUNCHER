@@ -12,4 +12,5 @@ export class Paths {
     public static IMAGES: string = path.join(Paths.ASSETS, "images", path.sep);
     public static CONFIGS: string = path.join(Paths.ASSETS, "config", path.sep);
     public static VIEWS: string = path.join(Paths.ASSETS, "html", path.sep);
+
 }

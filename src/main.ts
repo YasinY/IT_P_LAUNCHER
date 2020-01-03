@@ -1,15 +1,20 @@
-import {app, BrowserWindow} from "electron";
+import {app, BrowserWindow, ipcMain} from "electron";
 import * as path from "path";
 import {EmitListenerHandler} from "./listeners/EmitListenerHandler";
-import {ipcMain} from "electron";
 import {LoginRequest} from "./net/request/impl/LoginRequest";
 import {Paths} from "./Paths";
+
+global._isEnvironment = function(environment : string) : boolean {
+    return process.argv[2] === '--' + environment;
+}
 
 let currentWindow: Electron.BrowserWindow;
 
 let listenerHandler : EmitListenerHandler;
 
+
 function createWindow() {
+
     let isWindows = process.platform === "win32";
     currentWindow = getWindowInstance(isWindows);
     currentWindow.loadFile(Paths.VIEWS + "login_screen.html")
@@ -35,9 +40,6 @@ app.on('certificate-error', function(event, webContents, url, error,
 function declareGlobals() {
     let request = new LoginRequest();
     request.perform();
-    request.perform();
-    request.perform();
-    request.perform();
 }
 
 function initializeListeners() {
@@ -54,7 +56,7 @@ function prepareApplication() {
     declareGlobals()
     initialiseTemplateEngine()
     createWindow()
-    console.log("Application should now appear..")
+    console.log("Application should now appear.." + global._isEnvironment('dev'))
 
 }
 

@@ -1,12 +1,15 @@
 import {RequestDestination} from "../RequestDestination";
 import {Request} from "../Request";
 import * as http from "http";
-import {once} from "cluster";
 import {Paths} from "../../../Paths";
 
 let fs = require("fs");
 
 export class LoginRequest extends Request {
+
+    readonly CERT_PATH : string = Paths.CONFIGS + 'client.crt';
+    readonly KEY_PATH : string = Paths.CONFIGS + 'clientprivate.key';
+    readonly PASS_PHRASE : string = 'pEkEkE';
 
     constructor() {
         super(RequestDestination.LOGIN_SERVER, "GET");
@@ -14,12 +17,12 @@ export class LoginRequest extends Request {
 
     getOptions(): Object {
         return {
-            path: '/',
+            path: '/hello',
             //ca: fs.readFileSync(global.relativePaths.config + 'rootCA.crt'),
-            cert: fs.readFileSync(Paths.CONFIGS + 'client.crt'),
-            key: fs.readFileSync(Paths.CONFIGS + 'clientprivate.key'),
-            passphrase: 'pEkEkE',
-            rejectUnauthorized: false,
+            cert: fs.readFileSync(this.CERT_PATH),
+            key: fs.readFileSync(this.KEY_PATH),
+            passphrase: this.PASS_PHRASE,
+            rejectUnauthorized: true,
             requestCert: true,
         };
     }
@@ -36,10 +39,12 @@ export class LoginRequest extends Request {
     }
 
     public perform(): void {
-        let request = this.performRequest();
+        let request : Promise<http.ClientRequest> = this.performRequest();
         request.then((request) => {
             console.log("Connected!")
-            request.end();
+            request.write("nice", "UTF-8", () => {
+                console.error("I love this!");
+            })
         }).catch((error) => {
             console.log("Got error :[ " + error)
         })
