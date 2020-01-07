@@ -15,7 +15,9 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "collectCoverage": true,
-    "collectCoverageFrom": ["./src/**/*.{ts,js}"],
+    "collectCoverageFrom": [
+      "./src/**/*.{ts,js}"
+    ],
     "coverageDirectory": "./coverage"
   },
   "nyc": {
@@ -55,6 +57,7 @@
     "start:build:mac": "npm run compile && npm run copyassets:linux && npm run start",
     "start:build:windows": "npm run copyassets:windows && npm run compile && npm run start",
     "start:prod": "electron prod/main.js",
+    "run:dev": "npm run compile && npm run start",
     "obfuscate": "javascript-obfuscator ./dist --output ./obfuscated",
     "obfuscate:start-windows": "npm run obfuscate && npm run copyassets:windows:obfuscated && electron ./obfuscated/dist/main.js",
     "obfuscate:start-linux": "npm run obfuscate && npm run copyassets:linux:obfuscated && electron ./obfuscated/dist/main.js",

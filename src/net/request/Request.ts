@@ -3,12 +3,19 @@ import * as https from "https";
 import {RequestOptions} from "https";
 import * as http from "http";
 import {TLSSocket} from "tls";
+import * as fs from "fs";
+import {Paths} from "../../Paths";
+import {ApplicationEnvironment} from "../../application/ApplicationEnvironment";
 
 export abstract class Request {
 
+
+    readonly CERT_PATH: string = Paths.CONFIGS + 'client.crt';
+    readonly KEY_PATH: string = Paths.CONFIGS + 'clientprivate.key';
+    readonly PASS_PHRASE: string = 'pEkEkE';
+
     readonly serverFingerprint: string;
     readonly requestDestination: RequestDestination;
-
     readonly method: string;
 
     public constructor(requestDestination: RequestDestination, method: string) {
@@ -31,18 +38,22 @@ export abstract class Request {
             agent: new https.Agent({
                 maxCachedSessions: 0
             }),
+            cert: fs.readFileSync(this.CERT_PATH),
+            key: fs.readFileSync(this.KEY_PATH),
+            passphrase: this.PASS_PHRASE,
+            rejectUnauthorized: false,
             ...this.getOptions()
         }
     }
 
 
-    public performRequest(): Promise<http.ClientRequest> {
+    public prepareRequest(): Promise<http.ClientRequest> {
         return new Promise((resolve, reject) => {
-            if(this.requestDestination.url === null) {
+            if (this.requestDestination.url === null) {
                 reject(new Error("Request destination url should not be null."))
                 return;
             }
-            if(this.requestDestination.port === null) {
+            if (this.requestDestination.port === null) {
                 reject(new Error("Request destination port should not be null."))
                 return;
             }
@@ -55,33 +66,34 @@ export abstract class Request {
                 return;
             }
             let request = this.initialiseRequest();
-            resolve(this.requestAction(request));
+            this.establishRequest(request);
+            resolve();
         })
-        // return https.request(this.getAllOptions(), this.callBack());
     }
 
-    private requestAction(request : http.ClientRequest) : Promise<http.ClientRequest> {
-        return new Promise((resolve, reject) => {
+    private establishRequest(request: http.ClientRequest): void{
             request.on('socket', (socket: TLSSocket) => {
                 socket.on('secureConnect', () => {
                     let fingerPrint = socket.getPeerCertificate().fingerprint;
-                    if (!socket.authorized) {
-                        console.error("Socket is not authorized. Ignore this message if this happens on dev.")
-                        //reject(socket.authorizationError)
+                    if (ApplicationEnvironment.isNotDev()) {
+                        if (!socket.authorized) {
+                            console.error("Socket is not authorized. Ignore this message if this happens on dev.")
+
+                            return;
+                        }
+                        if (fingerPrint.localeCompare(this.serverFingerprint) !== 0) {
+                            throw new Error("Server is not verifiable! " + fingerPrint + " -> " + this.serverFingerprint)
+                        }
                     }
-                    if(fingerPrint.localeCompare(this.serverFingerprint) !== 0) {
-                        reject(new Error("Server is not verifiable! " + fingerPrint + " -> " + this.serverFingerprint));
-                    }
-                    resolve(request);
+                    request.end();
                 })
             });
             request.once('error', (error: Error) => {
-                reject(error)
+                throw error;
             })
-        })
     }
 
-    initialiseRequest() : http.ClientRequest {
+    initialiseRequest(): http.ClientRequest {
         return https.request(this.getAllOptions(), this.callBack);
     }
 

@@ -35,26 +35,26 @@ describe.each([
     })
     if (url == null) {
         test("Promise returns reject when url is null", () => {
-            let promise = testRequest.performRequest();
+            let promise = testRequest.prepareRequest();
             expect(promise).rejects.toEqual(Error("Request destination url should not be null."))
         })
     }
     if (port == null) {
         test("Promise returns reject when port is null", () => {
-            let promise = testRequest.performRequest();
+            let promise = testRequest.prepareRequest();
             expect(promise).rejects.toEqual(Error("Request destination port should not be null."))
         })
     }
     if (url != null && port != null) {
         if (url.length == 0) {
             test("Promise rejects when url has length of 0", () => {
-                let promise = testRequest.performRequest();
+                let promise = testRequest.prepareRequest();
                 expect(promise).rejects.toEqual(Error("Request destination url is not set."))
             })
         }
         if (port < 0) {
             test("Promise rejects when port is 0", () => {
-                let promise = testRequest.performRequest();
+                let promise = testRequest.prepareRequest();
                 expect(promise).rejects.toEqual(Error("Request destination port is not set."))
             })
         }
@@ -62,7 +62,7 @@ describe.each([
     if (port >= 0 && url != null && url != "") {
         test("Expecting the promise to not reject", () => {
             if (testRequest.requestDestination.url.length != 0 && !(testRequest.requestDestination.port < 0)) {
-                let promise = testRequest.performRequest();
+                let promise = testRequest.prepareRequest();
                 expect(promise).resolves.toBeCalled();
             }
         });

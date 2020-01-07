@@ -1,15 +1,14 @@
 import {RequestDestination} from "../RequestDestination";
 import {Request} from "../Request";
 import * as http from "http";
-import {Paths} from "../../../Paths";
+import {LoginResponse} from "../../response/LoginResponse";
 
-let fs = require("fs");
+const {ipcMain} = require('electron')
 
 export class LoginRequest extends Request {
 
-    readonly CERT_PATH : string = Paths.CONFIGS + 'client.crt';
-    readonly KEY_PATH : string = Paths.CONFIGS + 'clientprivate.key';
-    readonly PASS_PHRASE : string = 'pEkEkE';
+
+    private response: LoginResponse;
 
     constructor() {
         super(RequestDestination.LOGIN_SERVER, "GET");
@@ -17,34 +16,36 @@ export class LoginRequest extends Request {
 
     getOptions(): Object {
         return {
-            path: '/hello',
-            //ca: fs.readFileSync(global.relativePaths.config + 'rootCA.crt'),
-            cert: fs.readFileSync(this.CERT_PATH),
-            key: fs.readFileSync(this.KEY_PATH),
-            passphrase: this.PASS_PHRASE,
-            rejectUnauthorized: true,
+            path: '/login',
             requestCert: true,
         };
     }
 
     protected callBack(res: http.IncomingMessage): void {
+
+        let completeData = "";
         console.log(res.statusCode)
+
         res.on('error', (error) => {
             console.log(error);
         })
         res.on('data', (data) => {
-            console.log("Data: " + data)
-            return data;
+            completeData = completeData.concat(data);
+            console.log("Data: " + completeData)
+
         });
+        res.on('end', () => {
+            let foo: LoginResponse = Object.assign(new LoginResponse(), JSON.parse(completeData));
+            ipcMain.emit('login', foo)
+            // console.log("data: " + this.reply);
+            console.log("Data stopped streaming, json: " + foo.getJwtToken())
+        })
     }
 
     public perform(): void {
-        let request : Promise<http.ClientRequest> = this.performRequest();
+        let request: Promise<http.ClientRequest> = this.prepareRequest();
         request.then((request) => {
             console.log("Connected!")
-            request.write("nice", "UTF-8", () => {
-                console.error("I love this!");
-            })
         }).catch((error) => {
             console.log("Got error :[ " + error)
         })

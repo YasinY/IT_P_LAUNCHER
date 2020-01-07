@@ -3,10 +3,8 @@ import * as path from "path";
 import {EmitListenerHandler} from "./listeners/EmitListenerHandler";
 import {LoginRequest} from "./net/request/impl/LoginRequest";
 import {Paths} from "./Paths";
+import {ApplicationEnvironment} from "./application/ApplicationEnvironment";
 
-global._isEnvironment = function(environment : string) : boolean {
-    return process.argv[2] === '--' + environment;
-}
 
 let currentWindow: Electron.BrowserWindow;
 
@@ -38,8 +36,6 @@ app.on('certificate-error', function(event, webContents, url, error,
     callback(true);
 });
 function declareGlobals() {
-    let request = new LoginRequest();
-    request.perform();
 }
 
 function initializeListeners() {
@@ -56,7 +52,7 @@ function prepareApplication() {
     declareGlobals()
     initialiseTemplateEngine()
     createWindow()
-    console.log("Application should now appear.." + global._isEnvironment('dev'))
+    console.log("Application should now appear.." + ApplicationEnvironment.current())
 
 }
 
