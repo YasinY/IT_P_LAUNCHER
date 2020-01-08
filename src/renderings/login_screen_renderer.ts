@@ -13,10 +13,9 @@ button.addEventListener('click', () => {
     alert("sent: " + username + ", " + password)
     ipcRenderer.send('login', username, password)
     /// app.getCurrentWindow().loadFile(app.getGlobal("paths").views + "loading.html")
-})
-
-ipcRenderer.once('login', (event:any, loginResponse : LoginResponse) => {
+});
+ipcRenderer.on('requestSuccessful', (event:any, loginResponse : LoginResponse) => {
     console.log("Logged in? " + loginResponse.getJwtToken());
-})
+});
 //$("logo").attr("src", "./assets/logo.png")
 

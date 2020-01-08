@@ -3,8 +3,6 @@ import {Request} from "../Request";
 import * as http from "http";
 import {LoginResponse} from "../../response/LoginResponse";
 
-const {ipcMain} = require('electron')
-
 export class LoginRequest extends Request {
 
 
@@ -35,17 +33,16 @@ export class LoginRequest extends Request {
 
         });
         res.on('end', () => {
-            let foo: LoginResponse = Object.assign(new LoginResponse(), JSON.parse(completeData));
-            ipcMain.emit('login', foo)
-            // console.log("data: " + this.reply);
-            console.log("Data stopped streaming, json: " + foo.getJwtToken())
+            let loginResponse: LoginResponse = Object.assign(new LoginResponse(completeData), JSON.parse(completeData));
+
+            console.log("Data stopped streaming, json: " + loginResponse.getJwtToken())
         })
     }
 
     public perform(): void {
         let request: Promise<http.ClientRequest> = this.prepareRequest();
         request.then((request) => {
-            console.log("Connected!")
+            console.log("Connected! ")
         }).catch((error) => {
             console.log("Got error :[ " + error)
         })

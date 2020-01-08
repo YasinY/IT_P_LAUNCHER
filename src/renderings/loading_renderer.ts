@@ -6,7 +6,7 @@ ipcRenderer.on('login', (event: any, success: boolean) => {
         if (success) {
             remote.getCurrentWindow().loadFile(Paths.VIEWS+ "logged_in.html")
         } else {
-            console.log("Couldnt do request.")
+            console.log("Couldn't do request.");
             remote.getCurrentWindow().loadFile(Paths.VIEWS+ "login_screen.html")
         }
     }.bind(this), 15000)

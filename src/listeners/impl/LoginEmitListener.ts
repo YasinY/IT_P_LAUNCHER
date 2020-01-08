@@ -16,8 +16,8 @@ export class LoginEmitListener extends EmitListener {
             console.log("Received " + username + " and " + password);
             let request = new LoginRequest();
             request.perform();
-            //https.event.sender.send('login',)
 
+            //https.event.sender.send('login',)
             //this.currentWindow.loadFile(global.relativePaths.views + "loading.html")
 
         };

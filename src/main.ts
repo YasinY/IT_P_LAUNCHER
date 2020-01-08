@@ -17,12 +17,12 @@ function createWindow() {
     currentWindow = getWindowInstance(isWindows);
     currentWindow.loadFile(Paths.VIEWS + "login_screen.html")
     //currentWindow.loadURL("data:text/html;charset-UTF-8," + encodeURIComponent("<b>test</b>"))
-    initializeListeners()
+    initializeListeners();
     //currentWindow.loadURL("data:text/html;charset=UTF-8," + encodeURIComponent())
     currentWindow.webContents.openDevTools();
     currentWindow.once("ready-to-show", () => {
         currentWindow.show()
-    })
+    });
 
     currentWindow.on("closed", () => {
         currentWindow = null;
@@ -40,7 +40,7 @@ function declareGlobals() {
 
 function initializeListeners() {
     listenerHandler = new EmitListenerHandler(ipcMain, currentWindow)
-    console.log("Initializing listeners...")
+    console.log("Initializing listeners...");
     listenerHandler.initialise();
 }
 
